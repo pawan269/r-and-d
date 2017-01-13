@@ -1,15 +1,39 @@
-var app = require('express').createServer()
-  , io = require('socket.io').listen(app);
+console.log("Server started");
 
-app.listen(80);
+var WebSocketServer = require('ws').Server;
+var wss = new WebSocketServer({port: 2609});
 
-app.get('/', function (req, res) {
-  res.sendfile(__dirname + '/index.html');
+var clients = [];
+var usernames = [];
+var sessions = [];
+wss.on('connection', function(ws) {
+    clients.push(ws);
+    ws.send(JSON.stringify({'type': 'userlist', 'users': usernames, 'IDs': sessions}));
+    ws.on('message', function(message) {
+        var _packet = JSON.parse(message);
+        if (sessions.indexOf(_packet.ID) == -1) {
+            sessions.push(_packet.ID);
+            usernames.push(_packet.username);
+            broadcast();
+        }
+        console.log('%s: %s', _packet.username, _packet.message);
+        for (var i = 0; i < clients.length; i++) {
+            if (clients[i].readyState != clients[0].OPEN) {
+                console.error('Client state is ' + clients[i].readyState);
+            } else {
+                clients[i].send(message);
+            }
+        }
+    });
 });
 
-io.sockets.on('connection', function (socket) {
-  socket.emit('news', { hello: 'world' });
-  socket.on('my other event', function (data) {
-    console.log(data);
-  });
-});
+function broadcast() {
+//    console.log(usernames);
+    for (var i = 0; i < clients.length; i++) {
+        if (clients[i].readyState != clients[0].OPEN) {
+            console.error('Client state is ' + clients[i].readyState);
+        } else {
+            clients[i].send(JSON.stringify({'type': 'userlist', 'users': usernames, 'IDs': sessions}));
+        }
+    }
+}
