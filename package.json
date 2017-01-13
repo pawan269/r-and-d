@@ -6,6 +6,7 @@
   "main": "server.js",
   "repository": "https://github.com/pawan269/mytest.git",
   "dependencies": {
-    "express": "^4.14.0"
+    "express": "^4.14.0",
+    "websocket": "^1.0.24"
   }
 }
