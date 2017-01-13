@@ -1,0 +1,11 @@
+{
+  "name": "Server_Application",
+  "version": "1.0.0",
+  "description": "A server created by Pawan",
+  "license": "BSD-3-Clause",
+  "main": "server.js",
+  "repository": "https://github.com/pawan269/mytest.git",
+  "dependencies": {
+    "express": "^4.14.0"
+  }
+}
