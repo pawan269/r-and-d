@@ -6,6 +6,7 @@
   "main": "chat-server.js",
   "repository": "https://github.com/pawan269/mytest.git",
   "dependencies": {
+    "redis": "^2.6.4",
     "ws": "^1.1.1"
   }
 }

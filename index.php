@@ -48,16 +48,26 @@ session_start();
             var chat_server = new WebSocket("ws://localhost:2609");
 
             chat_server.onopen = function(event) {
+                var _packet = {
+                    'type': 'useronline',
+                    'ID': '<?php echo session_id(); ?>',
+                    'username': $("#username").val(),
+                    'message': ''
+                };
+                chat_server.send(JSON.stringify(_packet));
                 $("#input").focus();
             };
 
             chat_server.onmessage = function(event) {
                 var _packet = JSON.parse(event.data);
                 switch (_packet.type) {
-                    case 'chat' :
+                    case 'groupchat' :
                         addMessage(_packet.username, _packet.message);
                         break;
                     case 'userlist' :
+                        addUserList(_packet.users);
+                        break;
+                    case 'useronline' :
                         addUserList(_packet.users, _packet.IDs);
                         break;
                 }
@@ -68,7 +78,7 @@ session_start();
 
             function sendMessage() {
                 var _packet = {
-                    'type': 'chat',
+                    'type': 'groupchat',
                     'ID': '<?php echo session_id(); ?>',
                     'username': $("#username").val(),
                     'message': $("#input").val()
@@ -87,19 +97,39 @@ session_start();
             function addMessage(username, message) {
                 $("#content").append('<ul><li><b>' + username + '</b>: ' + message + '</li></ul>');
             }
-            function addUserList(users, IDs) {
+
+            function addUserList(users) {
+                console.log(users);
                 $("#userlist").html('');
                 for (var i = 0; i < users.length; i++) {
-                    $("#userlist").append('<div class="userlistrow" onclick="selectUser(\'' + IDs[i] + '\', \'' + users[i] + '\')">' + users[i] + '</div>');
+                    $("#userlist").append('<div class="userlistrow" onclick="selectUser(\'' + users[i]['userid'] + '\', \'' + users[i]['username'] + '\')">' + users[i]['username'] + '</div>');
 //                    console.log(users[i]);
                 }
             }
+
             function selectUser(sessionid, user) {
-                if (user == $("#username").val()) {
-                    alert('you can not chat with you!');
+                if (sessionid == '<?php echo session_id(); ?>') {
+                    alert('you can not chat with youself!');
                 } else {
                     $("#content").html('chat with ' + user);
+                    var _packet = {
+                        'type': 'init121chat',
+                        'ID': '<?php echo session_id(); ?>',
+                        'username': $("#username").val(),
+                        'message': '<?php echo session_id(); ?>' + '-' + sessionid
+                    }
+                    chat_server.send(JSON.stringify(_packet));
                 }
+            }
+
+            function setName() {
+                var _packet = {
+                    'type': 'setname',
+                    'ID': '<?php echo session_id(); ?>',
+                    'username': $("#username").val(),
+                    'message': ''
+                };
+                chat_server.send(JSON.stringify(_packet));
             }
         </script>
     </head>
@@ -108,11 +138,11 @@ session_start();
         <div class="chatwindow" id="content"></div>
         <div class="row">
             <span>Your Name : </span> 
-            <input type="text" name="username" id="username"/>
+            <input type="text" name="username" id="username"/> <input type="button" value="Set Name" onclick="setName();">
         </div>
         <div class="row">
             <span>Send Message : </span>
-            <input type="text" id="input"/> <input type="button" value="send" onclick="sendMessage();">
+            <input type="text" id="input"/> <input type="button" value="Send" onclick="sendMessage();">
         </div>
     </body>
 </html>
