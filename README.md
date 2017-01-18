@@ -14,7 +14,7 @@ Steps to setup
 
     5.1 $ git clone https://github.com/pawan269/r-and-d.git
     
-    5.2 create nginx virtual host pointing to cloned folder (folder having index.php)
+    5.2 create nginx virtual host pointing to cloned folder (folder having index.php, refer support/chat.dmc.loc file)
 
     5.3 $ node install
 
