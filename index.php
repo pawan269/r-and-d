@@ -17,22 +17,20 @@ session_start();
         <script src="assets/main.js"></script>
     </head>
     <body>
-        <div id="popup_box">
-            <h2 id="chat-title"></h2>
-            <a id="popupBoxClose" href="javascript: void(0);" onclick="$('#popup_box').fadeOut('slow');">Close</a>
-            <div id="121chatwindow"></div>
-        </div>        
-        <div class="userlist" id="userlist"></div>
-        <div class="chatwindow" id="content"></div>
-        <div class="row">
-            <span>Your Name : </span> 
-            <input type="text" name="username" id="username"/> <input type="button" value="Set Name" onclick="setName();">
-            <span id="istyping" class="cls-istyping"></span>
-        </div>
-        <div class="row">
-            <span>Send Message : </span>
-            <input type="text" id="input" onkeypress="setTyping(1);
-                    timer = 5;" onkeyup="setTyping(0);"/> <input type="button" value="Send" onclick="sendMessage();">
+        <div class="container">
+            <div class="userlist" id="userlist"></div>
+            <div class="chatwindow" id="content"></div>
+            <div class="row">
+                <div class='lbl'>Your Name : </div> 
+                <input type="text" name="username" id="username" class="txt">
+                <input type="button" value="Set Name" onclick="setName();" class='btn'>
+                <div id="istyping" class="cls-istyping"></div>
+            </div>
+            <div class="row">
+                <div class='lbl'>Send Message : </div>
+                <input type="text" id="input" onkeypress="setTyping(1, event);
+                        timer = 5;" onkeyup="setTyping(0, event);" class="txt"/> <input type="button" value="Send" onclick="sendMessage();" class='btn'>
+            </div>
         </div>
     </body>
 </html>

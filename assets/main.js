@@ -3,8 +3,8 @@
  * To change this template file, choose Tools | Templates
  * and open the template in the editor.
  */
-//                var chat_server = new WebSocket("ws://10.2.42.98:2609");
-var chat_server = new WebSocket("ws://localhost:2609");
+                var chat_server = new WebSocket("ws://10.2.42.98:2609");
+//var chat_server = new WebSocket("ws://localhost:2609");
 var whotyping = [];
 
 chat_server.onopen = function(event) {
@@ -64,6 +64,9 @@ function setIsTyping() {
 }
 
 function sendMessage() {
+    txt = $("#input").val();
+    if (jQuery.trim(txt) === '')
+        return false;
     var _packet = {
         'type': 'groupchat',
         'ID': sess_id,
@@ -132,12 +135,16 @@ function setName() {
 
 function reduceTimer() {
     timer = timer - 1;
-    setTyping(true);
+    setTyping(true, -1);
 }
 
 var flag;
 
-function setTyping(val) {
+function setTyping(val, event) {
+    if (event.keyCode === 13) {
+        sendMessage();
+        return false;
+    }
     if (val === 1) {
         timer = 5;
         var _packet = {
