@@ -40,6 +40,50 @@ session_start();
                 border: 1px solid #dbdbdb;
                 cursor: pointer;
             }
+            /* popup_box DIV-Styles*/
+            #popup_box { 
+                display:none; /* Hide the DIV */
+                position:fixed;  
+                _position:absolute; /* hack for internet explorer 6 */  
+                height:300px;  
+                width:600px;  
+                background:#FFFFFF;  
+                left: 300px;
+                top: 150px;
+                z-index:100; /* Layering ( on-top of others), if you have lots of layers: I just maximized, you can change it yourself */
+                margin-left: 15px;  
+
+                /* additional features, can be omitted */
+                border:2px solid #ff0000;      
+                padding:15px;  
+                font-size:15px;  
+                -moz-box-shadow: 0 0 5px #ff0000;
+                -webkit-box-shadow: 0 0 5px #ff0000;
+                box-shadow: 0 0 5px #ff0000;
+
+            }
+
+            #container {
+                background: #d2d2d2; /*Sample*/
+                width:100%;
+                height:100%;
+            }
+
+            a{  
+                cursor: pointer;  
+                text-decoration:none;  
+            } 
+
+            /* This is for the positioning of the Close Link */
+            #popupBoxClose {
+                font-size:20px;  
+                line-height:15px;  
+                right:5px;  
+                top:5px;  
+                position:absolute;  
+                color:#6fa5e2;  
+                font-weight:500;      
+            }            
         </style>
         <script src="socket.io.js"></script>
         <script src="jquery.min.js"></script>
@@ -68,7 +112,7 @@ session_start();
                         addUserList(_packet.users);
                         break;
                     case 'useronline' :
-                        addUserList(_packet.users, _packet.IDs);
+                        addUserList(_packet.users);
                         break;
                 }
 
@@ -99,7 +143,7 @@ session_start();
             }
 
             function addUserList(users) {
-                console.log(users);
+//                console.log(users);
                 $("#userlist").html('');
                 for (var i = 0; i < users.length; i++) {
                     $("#userlist").append('<div class="userlistrow" onclick="selectUser(\'' + users[i]['userid'] + '\', \'' + users[i]['username'] + '\')">' + users[i]['username'] + '</div>');
@@ -111,7 +155,8 @@ session_start();
                 if (sessionid == '<?php echo session_id(); ?>') {
                     alert('you can not chat with youself!');
                 } else {
-                    $("#content").html('chat with ' + user);
+                    $('#popup_box').fadeIn("slow");
+                    $("#chat-title").html("Chat with " + user);
                     var _packet = {
                         'type': 'init121chat',
                         'ID': '<?php echo session_id(); ?>',
@@ -131,9 +176,15 @@ session_start();
                 };
                 chat_server.send(JSON.stringify(_packet));
             }
+
         </script>
     </head>
     <body>
+        <div id="popup_box">    <!-- OUR PopupBox DIV-->
+            <h2 id="chat-title"></h2>
+            <a id="popupBoxClose" href="javascript: void(0);" onclick="$('#popup_box').fadeOut('slow');">Close</a>
+            <div id="121chatwindow"></div>
+        </div>        
         <div class="userlist" id="userlist"></div>
         <div class="chatwindow" id="content"></div>
         <div class="row">
