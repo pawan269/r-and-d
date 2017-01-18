@@ -6,11 +6,17 @@ Steps to setup
 
 2. Install redis
 
-3. Install application
+3. Install nginx
 
-    3.1 $ git clone https://github.com/pawan269/r-and-d.git
+4. Install php5-fpm
 
-    3.2 $ node install
+5. Install application
 
-    3.3 $ node chat-server
+    5.1 $ git clone https://github.com/pawan269/r-and-d.git
+    
+    5.2 create nginx virtual host pointing to cloned folder (folder having index.php)
+
+    5.3 $ node install
+
+    5.4 $ node chat-server
 
