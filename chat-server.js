@@ -19,15 +19,16 @@ var user = new u();
 
 wss.on('connection', function(ws) {
     subscriber.subscribe('global');
-
     /*
      * Messages will be send from websocket
      **/
 
     subscriber.on('message', function(channel, message) {
-        if (ws.OPEN) {
-            ws.send(message);
-        }
+        ws.send(message, function(err) {
+            if (err !== null) {
+                console.log('error: %s', err);
+            }
+        });
     });
     /*
      * Messages will be recieved on websocket
@@ -54,6 +55,12 @@ wss.on('connection', function(ws) {
                 user.setUserName(_packet.ID, _packet.username);
                 allUsers = user.getAllUserNameAndID();
                 publisher.publish('global', JSON.stringify({'type': 'userlist', 'users': allUsers}));
+                break;
+            case 'starttyping':
+                publisher.publish('global', JSON.stringify({'type': 'starttyping', 'userid': _packet.ID, 'username': _packet.username}));
+                break;
+            case 'endtyping':
+                publisher.publish('global', JSON.stringify({'type': 'endtyping', 'userid': _packet.ID, 'username': _packet.username}));
                 break;
         }
     });
