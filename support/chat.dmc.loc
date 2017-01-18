@@ -1,0 +1,20 @@
+server {
+        listen   80; ## listen for ipv4; this line is default and implied
+        root /home/pawan/node/r-and-d;
+        index index.php index.html index.htm;
+        server_name chat.dmc.loc;
+
+        location ~ \.php$ {
+                try_files $uri =404;
+                fastcgi_split_path_info ^(.+\.php)(/.+)$;
+                fastcgi_pass unix:/var/run/php5-fpm.sock;
+                fastcgi_index index.php;
+                include fastcgi_params;
+		fastcgi_param   APPLICATION_ENV  production; #APPLICATION_ENV = production
+		error_log /var/log/nginx/error.log;
+        }
+
+	location ~ /\.ht {
+                deny all;
+        }
+}
