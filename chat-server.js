@@ -47,7 +47,7 @@ wss.on('connection', function(ws) {
                 publisher.publish('global', message);
                 break;
             case 'init121chat' :
-
+                subscriber.subscribe('121chat');
                 break;
             case '121chat' :
                 break;

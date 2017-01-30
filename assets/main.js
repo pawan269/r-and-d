@@ -3,7 +3,7 @@
  * To change this template file, choose Tools | Templates
  * and open the template in the editor.
  */
-                var chat_server = new WebSocket("ws://10.2.42.98:2609");
+var chat_server = new WebSocket("ws://10.2.42.98:2609");
 //var chat_server = new WebSocket("ws://localhost:2609");
 var whotyping = [];
 
@@ -117,6 +117,8 @@ function selectUser(sessionid, user) {
             'type': 'init121chat',
             'ID': sess_id,
             'username': $("#username").val(),
+            'to_ID': sessionid,
+            'to_username': user,
             'message': sess_id + '-' + sessionid
         };
         chat_server.send(JSON.stringify(_packet));
